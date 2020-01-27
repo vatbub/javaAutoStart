@@ -19,21 +19,50 @@
  */
 package com.github.vatbub.javaautostart
 
+import com.github.vatbub.javaautostart.Interpreter.java
+import com.github.vatbub.javaautostart.Interpreter.javaw
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 
+enum class Interpreter {
+    java, javaw
+}
+
+data class AutoStartLaunchConfig @JvmOverloads constructor(val jarFileLocation: File = File(AutoStartManager::class.java.protectionDomain.codeSource.location.toURI()),
+                                                           val interpreter: Interpreter = javaw,
+                                                           val jvmOptions: String? = null,
+                                                           val additionalArgs: String? = null) {
+
+    internal val asCommand: String by lazy {
+        val jreBin = File(System.getProperty("java.home"), "bin")
+        val interpreterLocation = when (interpreter) {
+            java -> jreBin.toPath().resolve("java.exe").toFile()
+            javaw -> jreBin.toPath().resolve("javaw.exe").toFile()
+        }
+        val commandBuilder = StringBuilder("\"$interpreterLocation\"")
+
+        if (jvmOptions != null)
+            commandBuilder.append(" $jvmOptions")
+
+        commandBuilder.append(" -jar ")
+                .append("\"$jarFileLocation\"")
+
+        if (additionalArgs != null)
+            commandBuilder.append(" $additionalArgs")
+
+        commandBuilder.toString()
+    }
+}
+
 /**
  * Manages the auto start settings of an app.
  *
  * @param appName The name of the app. Must be unique. If not unique, the settings of the conflicting program will be overwritten.
- * @param jarLocation The location of the jar to add to the auto start. If not specified, the class will try to find the location automatically.
  * @throws IllegalStateException If the os is not windows
  */
-class AutoStartManager @JvmOverloads constructor(private val appName: String, jarLocation: File? = null) {
-    private val javawExecutable = File(System.getProperty("java.home"), "bin").toPath().resolve("javaw.exe").toFile()
-    private val jarLocation = jarLocation ?: File(javaClass.protectionDomain.codeSource.location.toURI())
+class AutoStartManager(private val appName: String) {
     private val keyParentPath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
     /**
@@ -49,25 +78,20 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
     /**
      * Adds the app managed by this instance to the auto start of windows.
      * If an app with the same name already exists, its entry will be overwritten.
-     * Consequently, this means that the additionalArgs can be updated simply by calling this method again.
+     * Consequently, this means that the [autoStartLaunchConfig] can be updated simply by calling this method again.
      *
-     * When starting automatically, the app will be started using javaw, consequently having no standard in- and output.
-     *
-     * @param additionalArgs Additional args to be supplied to the app on auto start.
+     * @param autoStartLaunchConfig The configuration to be used to launch the app
      */
     @JvmOverloads
-    fun addToAutoStart(additionalArgs: String? = null) {
+    fun addToAutoStart(autoStartLaunchConfig: AutoStartLaunchConfig = AutoStartLaunchConfig()) {
         verifyOs()
-        var value = "\"$javawExecutable\" -jar \"$jarLocation\""
-        if (additionalArgs != null)
-            value = "$value $additionalArgs"
 
         if (!Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, keyParentPath)) {
             val createKeyResult = Advapi32Util.registryCreateKey(WinReg.HKEY_CURRENT_USER, keyParentPath)
             if (!createKeyResult)
                 throw IllegalStateException("Unable to create the registry key for an unknown reason")
         }
-        Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, keyParentPath, appName, value)
+        Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, keyParentPath, appName, autoStartLaunchConfig.asCommand)
     }
 
     /**
@@ -79,7 +103,7 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
             Advapi32Util.registryDeleteValue(WinReg.HKEY_CURRENT_USER, keyParentPath, appName)
     }
 
-    private fun verifyOs(){
+    private fun verifyOs() {
         if (!SystemUtils.IS_OS_WINDOWS)
             throw IllegalStateException("Only Windows is supported")
     }

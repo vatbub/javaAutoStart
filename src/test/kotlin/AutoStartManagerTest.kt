@@ -19,6 +19,8 @@
  */
 package com.github.vatbub.javaautostart
 
+import com.github.vatbub.javaautostart.Interpreter.java
+import com.github.vatbub.javaautostart.Interpreter.javaw
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
 import org.apache.commons.lang3.SystemUtils
@@ -31,8 +33,15 @@ class AutoStartManagerTest {
     private val appName = "autoStartManagerTestApp"
     private val manager = AutoStartManager(appName)
     private val currentJarLocation = File(javaClass.protectionDomain.codeSource.location.toURI()).parentFile.toPath().resolve("classes").toFile()
-    private val javawExecutable = File(System.getProperty("java.home"), "bin").toPath().resolve("javaw.exe").toFile()
     private val keyParentPath = "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+
+    private fun jvmExecutable(interpreter: Interpreter = javaw): File {
+        val jdkBin = File(System.getProperty("java.home"), "bin").toPath()
+        return when (interpreter) {
+            java -> jdkBin.resolve("java.exe").toFile()
+            javaw -> jdkBin.resolve("javaw.exe").toFile()
+        }
+    }
 
     private val currentRegistryValue: String
         get() = Advapi32Util.registryGetStringValue(
@@ -57,15 +66,31 @@ class AutoStartManagerTest {
     fun testRegistryValue() = testWrapper {
         Assertions.assertFalse(manager.isInAutoStart)
         manager.addToAutoStart()
-        Assertions.assertEquals("\"$javawExecutable\" -jar \"$currentJarLocation\"", currentRegistryValue)
+        Assertions.assertEquals("\"${jvmExecutable()}\" -jar \"$currentJarLocation\"", currentRegistryValue)
+    }
+
+    @Test
+    fun testRegistryValueWithJava() = testWrapper {
+        Assertions.assertFalse(manager.isInAutoStart)
+        val interpreter = java
+        manager.addToAutoStart(AutoStartLaunchConfig(interpreter = interpreter))
+        Assertions.assertEquals("\"${jvmExecutable(interpreter)}\" -jar \"$currentJarLocation\"", currentRegistryValue)
     }
 
     @Test
     fun testRegistryValueWithAdditionalArgs() = testWrapper {
         val additionalArgs = "--noGui"
         Assertions.assertFalse(manager.isInAutoStart)
-        manager.addToAutoStart(additionalArgs)
-        Assertions.assertEquals("\"$javawExecutable\" -jar \"$currentJarLocation\" $additionalArgs", currentRegistryValue)
+        manager.addToAutoStart(AutoStartLaunchConfig(additionalArgs = additionalArgs))
+        Assertions.assertEquals("\"${jvmExecutable()}\" -jar \"$currentJarLocation\" $additionalArgs", currentRegistryValue)
+    }
+
+    @Test
+    fun testRegistryValueWithJvmOptions() = testWrapper {
+        val jvmOptions = "--showversion"
+        Assertions.assertFalse(manager.isInAutoStart)
+        manager.addToAutoStart(AutoStartLaunchConfig(jvmOptions = jvmOptions))
+        Assertions.assertEquals("\"${jvmExecutable()}\" $jvmOptions -jar \"$currentJarLocation\"", currentRegistryValue)
     }
 
     @Test

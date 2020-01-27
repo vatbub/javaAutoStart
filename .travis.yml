@@ -9,7 +9,7 @@ install:
   - export JAVA_HOME="/c/Program Files/Java/jdk1.8.0_211"
   - export PATH=$PATH:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:$JAVA_HOME/bin
 script:
-  - mvn verify
+  - mvn verify -DtrimStackTrace=false
 notifications:
   email:
     recipients:

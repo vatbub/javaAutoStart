@@ -56,6 +56,11 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
         if (additionalArgs != null)
             value = "$value $additionalArgs"
 
+        if (!Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, keyParentPath)) {
+            val createKeyResult = Advapi32Util.registryCreateKey(WinReg.HKEY_CURRENT_USER, keyParentPath)
+            if (!createKeyResult)
+                throw IllegalStateException("Unable to create the registry key for an unknown reason")
+        }
         Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, keyParentPath, appName, value)
     }
 

@@ -21,13 +21,15 @@ package com.github.vatbub.javaautostart
 
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
+import org.apache.commons.lang3.SystemUtils
 import java.io.File
 
 /**
  * Manages the auto start settings of an app.
- * IMPORTANT: The behavior of this class is undefined if not on Windows!
+ *
  * @param appName The name of the app. Must be unique. If not unique, the settings of the conflicting program will be overwritten.
  * @param jarLocation The location of the jar to add to the auto start. If not specified, the class will try to find the location automatically.
+ * @throws IllegalStateException If the os is not windows
  */
 class AutoStartManager @JvmOverloads constructor(private val appName: String, jarLocation: File? = null) {
     private val javawExecutable = File(System.getProperty("java.home"), "bin").toPath().resolve("javaw.exe").toFile()
@@ -38,7 +40,10 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
      * Checks whether the app managed by this instance is currently in the auto start of windows.
      */
     val isInAutoStart: Boolean
-        get() = Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, keyParentPath, appName)
+        get() {
+            verifyOs()
+            return Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, keyParentPath, appName)
+        }
 
 
     /**
@@ -52,6 +57,7 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
      */
     @JvmOverloads
     fun addToAutoStart(additionalArgs: String? = null) {
+        verifyOs()
         var value = "\"$javawExecutable\" -jar \"$jarLocation\""
         if (additionalArgs != null)
             value = "$value $additionalArgs"
@@ -68,7 +74,13 @@ class AutoStartManager @JvmOverloads constructor(private val appName: String, ja
      * Removes the app managed by this instance from the auto start. No-op if [isInAutoStart] is `false`.
      */
     fun removeFromAutoStart() {
+        verifyOs()
         if (isInAutoStart)
             Advapi32Util.registryDeleteValue(WinReg.HKEY_CURRENT_USER, keyParentPath, appName)
+    }
+
+    private fun verifyOs(){
+        if (!SystemUtils.IS_OS_WINDOWS)
+            throw IllegalStateException("Only Windows is supported")
     }
 }

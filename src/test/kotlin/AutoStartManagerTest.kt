@@ -21,6 +21,7 @@ package com.github.vatbub.javaautostart
 
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
+import org.apache.commons.lang3.SystemUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -43,7 +44,7 @@ class AutoStartManagerTest {
     }
 
     @Test
-    fun addAndRemoveTest() {
+    fun addAndRemoveTest() = testWrapper {
         Assertions.assertFalse(manager.isInAutoStart)
         manager.addToAutoStart()
         Assertions.assertTrue(manager.isInAutoStart)
@@ -52,14 +53,14 @@ class AutoStartManagerTest {
     }
 
     @Test
-    fun testRegistryValue() {
+    fun testRegistryValue() = testWrapper {
         Assertions.assertFalse(manager.isInAutoStart)
         manager.addToAutoStart()
         Assertions.assertEquals("\"$javawExecutable\" -jar \"$currentJarLocation\"", currentRegistryValue)
     }
 
     @Test
-    fun testRegistryValueWithAdditionalArgs() {
+    fun testRegistryValueWithAdditionalArgs() = testWrapper {
         val additionalArgs = "--noGui"
         Assertions.assertFalse(manager.isInAutoStart)
         manager.addToAutoStart(additionalArgs)
@@ -67,8 +68,24 @@ class AutoStartManagerTest {
     }
 
     @Test
-    fun removeWithoutAdding() {
+    fun removeWithoutAdding() = testWrapper {
         Assertions.assertFalse(manager.isInAutoStart)
         manager.removeFromAutoStart()
+    }
+
+    private fun testWrapper(test: () -> Unit) {
+        if (SystemUtils.IS_OS_WINDOWS)
+            test()
+        else
+            assertException(IllegalStateException("Only Windows is supported"), test)
+    }
+
+    private fun assertException(expectedException: Throwable, test: () -> Unit) {
+        try {
+            test()
+            Assertions.fail<Unit>("Expected exception of type ${expectedException.javaClass.name} not thrown")
+        } catch (e: Throwable) {
+            Assertions.assertEquals(expectedException, e)
+        }
     }
 }

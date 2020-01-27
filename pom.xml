@@ -22,7 +22,7 @@
             <url>https://jcenter.bintray.com</url>
         </repository>
         <repository>
-            <snapshots />
+            <snapshots/>
             <id>snapshots</id>
             <name>libs-snapshot</name>
             <url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
@@ -127,6 +127,12 @@
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -7,7 +7,7 @@ cache:
 install:
   - wget https://s3.eu-central-1.amazonaws.com/vatbubjdk/jdk-8u191-linux-x64.tar.gz -nv
   - tar -xf jdk-8u191-linux-x64.tar.gz
-  - export JAVA_HOME=/home/travis/build/vatbub/fokLauncher/jdk1.8.0_191/
+  - export JAVA_HOME=/home/travis/build/vatbub/javaAutoStart/jdk1.8.0_191/
 script:
   - mvn verify
 notifications:

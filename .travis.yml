@@ -1,13 +1,15 @@
-os: windows
-language: bash
+jobs:
+  include:
+    - os: windows
+      language: bash
+    - os: linux
+      language: java
+      jdk: openjdk8
 cache:
   directories:
     - $HOME/.m2
 install:
-  - choco install jdk8
-  - choco install maven
-  - export JAVA_HOME="/c/Program Files/Java/jdk1.8.0_211"
-  - export PATH=$PATH:/c/ProgramData/chocolatey/lib/maven/apache-maven-3.6.3/bin:$JAVA_HOME/bin
+  - travisCiSetup.sh
 script:
   - mvn verify -DtrimStackTrace=false
 notifications:

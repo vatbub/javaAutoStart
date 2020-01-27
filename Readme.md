@@ -1,4 +1,4 @@
-# javaAutoStart
+# javaAutoStart [![Build Status](https://travis-ci.org/vatbub/javaAutoStart.svg?branch=master)](https://travis-ci.org/vatbub/javaAutoStart)
 A simple library to add Java/Kotlin.JVM apps to the autostart of Windows.
 
 ## Download

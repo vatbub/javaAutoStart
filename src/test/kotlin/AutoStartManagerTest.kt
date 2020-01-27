@@ -85,7 +85,8 @@ class AutoStartManagerTest {
             test()
             Assertions.fail<Unit>("Expected exception of type ${expectedException.javaClass.name} not thrown")
         } catch (e: Throwable) {
-            Assertions.assertEquals(expectedException, e)
+            Assertions.assertEquals(expectedException.javaClass.name, e.javaClass.name)
+            Assertions.assertEquals(expectedException.message, e.message)
         }
     }
 }

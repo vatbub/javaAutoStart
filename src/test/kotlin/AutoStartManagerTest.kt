@@ -40,7 +40,8 @@ class AutoStartManagerTest {
 
     @AfterEach
     fun cleanUp() {
-        manager.removeFromAutoStart()
+        if (SystemUtils.IS_OS_WINDOWS)
+            manager.removeFromAutoStart()
     }
 
     @Test

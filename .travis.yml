@@ -9,7 +9,7 @@ cache:
   directories:
     - $HOME/.m2
 install:
-  - travisCiSetup.sh
+  - ./travisCiSetup.sh
 script:
   - mvn verify -DtrimStackTrace=false
 notifications:

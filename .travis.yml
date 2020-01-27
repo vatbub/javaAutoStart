@@ -7,7 +7,8 @@ install:
   - choco install jdk8
   - choco install maven
 script:
-  - C:\Users\travis\.m2\bin\mvn verify
+  - echo $PATH
+  - mvn verify
 notifications:
   email:
     recipients:

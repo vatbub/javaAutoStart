@@ -6,8 +6,9 @@ cache:
 install:
   - choco install jdk8
   - choco install maven
+  - export JAVA_HOME=/c/Program Files/Java/jdk1.8.0_211
+  - export PATH=$PATH:/c/ProgramData/chocolatey/lib/maven/bin:$JAVA_HOME/bin
 script:
-  - echo $PATH
   - mvn verify
 notifications:
   email:

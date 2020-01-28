@@ -1,4 +1,4 @@
-# javaAutoStart [![Build Status](https://travis-ci.org/vatbub/javaAutoStart.svg?branch=master)](https://travis-ci.org/vatbub/javaAutoStart) ![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart)
+# javaAutoStart [![Build Status](https://travis-ci.org/vatbub/javaAutoStart.svg?branch=master)](https://travis-ci.org/vatbub/javaAutoStart) [![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart)](http://search.maven.org/search?q=g:com.github.vatbub%20AND%20a:javaAutoStart)
 A simple library to add Java/Kotlin.JVM apps to the autostart of Windows.
 
 ## Download
@@ -11,7 +11,7 @@ The library is available on ![Maven Central](https://img.shields.io/maven-centra
 </dependency>
 ```
 
-Latest version: ![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart?label=javaAutoStart)
+Latest version: [![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart?label=javaAutoStart)](http://search.maven.org/search?q=g:com.github.vatbub%20AND%20a:javaAutoStart)
 
 If you get some strange JNA exceptions, also add these dependencies:
 
@@ -32,7 +32,7 @@ If you get some strange JNA exceptions, also add these dependencies:
 </dependencies>
 ```
 
-The latest versions of the above dependencies are: ![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna?label=jna) ![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna-platform?label=jna-platform)
+The latest versions of the above dependencies are: [![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna?label=jna)](http://search.maven.org/search?q=g:net.java.dev.jna%20AND%20a:jna) [![Maven Central](https://img.shields.io/maven-central/v/net.java.dev.jna/jna-platform?label=jna-platform)](http://search.maven.org/search?q=g:net.java.dev.jna%20AND%20a:jna-platform)
 
 ## Usage
 ### Java

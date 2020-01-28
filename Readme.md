@@ -2,7 +2,7 @@
 A simple library to add Java/Kotlin.JVM apps to the autostart of Windows.
 
 ## Download
-The library is available on ![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart) and on JCenter.
+The library is available on [![Maven Central](https://img.shields.io/maven-central/v/com.github.vatbub/javaAutoStart)](http://search.maven.org/search?q=g:com.github.vatbub%20AND%20a:javaAutoStart) and on JCenter.
 ```xml
 <dependency>
     <groupId>com.github.vatbub</groupId>

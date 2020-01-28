@@ -7,7 +7,7 @@ The library is available on ![Maven Central](https://img.shields.io/maven-centra
 <dependency>
     <groupId>com.github.vatbub</groupId>
     <artifactId>javaAutoStart</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 

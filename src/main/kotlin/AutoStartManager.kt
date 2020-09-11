@@ -35,7 +35,7 @@ data class AutoStartLaunchConfig @JvmOverloads constructor(val jarFileLocation: 
                                                            val jvmOptions: String? = null,
                                                            val additionalArgs: String? = null) {
 
-    internal val asCommand: String by lazy {
+    val asCommand: String by lazy {
         val jreBin = File(System.getProperty("java.home"), "bin")
         val interpreterLocation = when (interpreter) {
             java -> jreBin.toPath().resolve("java.exe").toFile()

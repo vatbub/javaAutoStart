@@ -20,7 +20,7 @@
     </parent>
 
     <artifactId>javaAutoStart</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Java Auto Start</name>
     <description>A simple library that allows a java app to insert itself into the autostart of Windows</description>
@@ -37,7 +37,7 @@
         <connection>scm:git:git@github.com:vatbub/${gitRepoName}.git</connection>
         <url>https://github.com/vatbub/${gitRepoName}</url>
         <developerConnection>scm:git:git@github.com:vatbub/${gitRepoName}.git</developerConnection>
-        <tag>javaAutoStart-1.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>

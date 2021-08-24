@@ -26,6 +26,7 @@ import com.sun.jna.platform.win32.WinReg
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 
+@Suppress("EnumEntryName")
 enum class Interpreter {
     java, javaw
 }

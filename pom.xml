@@ -30,7 +30,7 @@
         <gitRepoName>javaAutoStart</gitRepoName>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>1.7.32</slf4j.version>
-        <jna.version>5.9.0</jna.version>
+        <jna.version>5.12.1</jna.version>
     </properties>
 
     <scm>
